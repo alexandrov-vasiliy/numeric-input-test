@@ -7,7 +7,8 @@
     </div>
 
     <div class="flex flex-col gap-2">
-      <label class="student-name font-koulen text-base text-dark group-[.focused]:text-primary" for="hours-old">{{ student.name }} is</label>
+      <label class="student-name font-koulen text-base text-dark group-[.focused]:text-primary"
+             for="hours-old">{{ student.name }} is</label>
       <div class="flex gap-2 items-baseline">
         <input
           :value="formattedModelValue"
@@ -21,7 +22,6 @@
           type="text"
           inputmode="numeric"
         />
-        <span ref="textWidthElement" class="absolute invisible">{{ formattedModelValue }}</span>
         <div class="text-dark text-lg">hours old</div>
       </div>
     </div>
@@ -31,6 +31,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { Student } from '@/interfaces/student'
+import { FORMATING_REGEX, NOT_NUMBER_REGEX } from '@/constants/regex'
 
 interface Props {
   student: Student;
@@ -48,16 +49,15 @@ const emit = defineEmits<{
 }>()
 
 const isFocused = ref(false)
-const textWidthElement = ref<HTMLElement | null>(null)
 
 const cleanValue = (value: string) => {
-  return value.replace(/\D/g, '').slice(0, props.maxLength)
+  return value.replace(NOT_NUMBER_REGEX, '').slice(0, props.maxLength)
 }
 
 const formatValue = (value: string) => {
   if (value.length <= 0) return ''
   const limitedValue = cleanValue(value)
-  return limitedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  return limitedValue.replace(FORMATING_REGEX, ' ')
 }
 
 
@@ -67,7 +67,7 @@ const formattedModelValue = computed(() => {
 
 const onInput = (event: Event) => {
   const target = event.target
-  if(target instanceof HTMLInputElement) {
+  if (target instanceof HTMLInputElement) {
     const cleaned = cleanValue(target.value)
     const formatted = formatValue(cleaned)
     target.value = formatted
@@ -84,8 +84,7 @@ const onBlur = () => {
 }
 
 const inputWidth = computed(() => {
-    return `${formattedModelValue.value.length + 1}ch`
-
+  return `${formattedModelValue.value.length + 1}ch`
 })
 </script>
 

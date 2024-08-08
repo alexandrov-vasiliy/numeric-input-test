@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-lg mx-auto py-20">
-    <StudentHoursInput :student="student" v-model="student.age"/>
-    {{student.age}}
+    <StudentHoursInput :student="student" v-model="student.age" />
+    {{ student.age }}
   </div>
 </template>
 
